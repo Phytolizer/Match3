@@ -8,6 +8,7 @@ import java.awt.*;
 public class Gem {
     private Color color;
     private String type = "normal";
+    private int matchSize;
     public Gem(Color c) {
         color = c;
     }
@@ -17,4 +18,8 @@ public class Gem {
         int border = bWidth / 5;
         art.fillRect(x + border, y + border, bWidth - border * 2, bWidth - border * 2);
     }
+    public String toString() {
+        return "" + color.getRGB();
+    }
+
 }

@@ -17,6 +17,8 @@ public class Graphics implements Runnable, KeyListener, WindowListener {
     private Image imgBuffer;
 
     private Grid grid;
+    private Coordinate clickingCoords;
+    private boolean canSwitch = true;
 
     private Color bgColor = new Color(128, 128, 255);
     public Graphics() {
@@ -93,6 +95,25 @@ public class Graphics implements Runnable, KeyListener, WindowListener {
     @Override
     public void run() {
         while(isRunning) {
+            Coordinate mouseCoords = grid.getCoordsAt(frame.mouseX, frame.mouseY);
+            if(mouseCoords != null) {
+                if(clickingCoords == null) {
+                    if(frame.isClicking()) {
+                        clickingCoords = mouseCoords;
+                    }
+                } else if(frame.isClicking() && !mouseCoords.equals(clickingCoords) && canSwitch) {
+                    frame.setTitle("" + Direction.getDirection(clickingCoords, mouseCoords));
+                    grid.switchGems(clickingCoords, Direction.getDirection(clickingCoords, mouseCoords));
+                    canSwitch = false;
+                    clickingCoords = mouseCoords;
+                }
+            }
+            if(clickingCoords != null && !frame.isClicking()) {
+                clickingCoords = null;
+            }
+            if(!frame.isClicking() && !canSwitch) {
+                canSwitch = true;
+            }
             draw();
             try {
                 Thread.sleep(10);
